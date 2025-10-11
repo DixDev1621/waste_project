@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Waste Sorting System ♻️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #004d40, #00796b);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #00251a;
+            padding: 20px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            flex-grow: 1;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        #camera-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid #00e676;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .capture-btn {
+            background-color: #00e676;
+            color: #004d40;
+        }
+
+        .predict-btn {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+
+        .capture-btn:hover {
+            background-color: #1de9b6;
+        }
+
+        .predict-btn:hover {
+            background-color: #fbc02d;
+        }
+
+        #result-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #result-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #result-box h2 {
+            margin-bottom: 10px;
+        }
+
+        #result {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffeb3b;
+        }
+
+        footer {
+            background: #00251a;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        #preview {
+            margin-top: 15px;
+            width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        🌍 SMART WASTE SORTING SYSTEM ♻️
+    </header>
+
+    <main>
+        <!-- Camera Section -->
+        <section id="camera-section">
+            <h2>📸 Live Camera Feed</h2>
+            <video id="video" autoplay></video>
+            <div class="buttons">
+                <button class="capture-btn" id="capture-btn">📷 Capture</button>
+                <button class="predict-btn" id="predict-btn">🤖 Predict</button>
+            </div>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <img id="preview" src="" alt="">
+        </section>
+
+        <!-- Result Section -->
+        <section id="result-section">
+            <h2>🧠 AI Prediction Result</h2>
+            <div id="result-box">
+                <h2>Detected Type:</h2>
+                <p id="result">Awaiting capture...</p>
+            </div>
+            <div style="margin-top:20px;">
+                <h3>💡 Info Panel:</h3>
+                <ul>
+                    <li><b>Recyclable:</b> Plastic bottles, cans, cardboard</li>
+                    <li><b>Hazardous:</b> Batteries, chemicals, medical waste</li>
+                    <li><b>Biodegradable:</b> Food, paper, plants</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        © 2025 Smart Waste Sorting | Powered by AI & Arduino
+    </footer>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const preview = document.getElementById('preview');
+        const resultText = document.getElementById('result');
+        const captureBtn = document.getElementById('capture-btn');
+        const predictBtn = document.getElementById('predict-btn');
+
+        // Start camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                alert('Camera access denied or not available.');
+                console.error(err);
+            });
+
+        let capturedImage = null;
+
+        // Capture image
+        captureBtn.onclick = () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            capturedImage = canvas.toDataURL('image/jpeg');
+            preview.src = capturedImage;
+            resultText.textContent = "Image captured! Ready to predict.";
+        };
+
+        // Predict using Flask backend
+        predictBtn.onclick = () => {
+            if (!capturedImage) {
+                alert("Please capture an image first!");
+                return;
+            }
+
+            resultText.textContent = "⏳ Predicting...";
+            fetch('/predict', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ image: capturedImage })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    resultText.textContent = "❌ Error: " + data.error;
+                } else {
+                    resultText.textContent = `✅ ${data.label.toUpperCase()} (${data.confidence}%)`;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                resultText.textContent = "⚠️ Prediction failed.";
+            });
+        };
+    </script>
+</body>
+</html>
