@@ -523,21 +523,6 @@ flowchart TD
 🧠 AI-Based Classification &nbsp;•&nbsp; 📷 Computer Vision &nbsp;•&nbsp; ⚙️ Embedded Hardware &nbsp;•&nbsp; 🔌 Serial Communication  
 🔄 Automated Servo Control &nbsp;•&nbsp; ♻️ Waste Segregation &nbsp;•&nbsp; 🚛 Municipal Integration Concept &nbsp;•&nbsp; 🌱 Clean & Green Technology
 
----
-
-## 👨‍💻 Contributors
-
-| Role | Name |
-|---|---|
-| **Team Name** | _your team name_ |
-| **Project Lead** | _name_ |
-| **AI / ML** | _name_ |
-| **Hardware** | _name_ |
-| **Software** | _name_ |
-| **Documentation** | _name_ |
-| **Design** | _name_ |
-
----
 
 ## 📜 License
 
