@@ -551,10 +551,3 @@ This project is intended for:
 
 ---
 
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&duration=3500&pause=1000&color=16A34A&center=true&vCenter=true&width=700&lines=Made+with+💚+for+a+cleaner+planet;From+AI+recognition+to+intelligent+segregation;⭐+Star+this+repo+if+you+like+it!" alt="Footer typing" />
-</p>
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer" alt="Footer" />
-</p>
